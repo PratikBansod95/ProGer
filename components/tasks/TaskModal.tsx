@@ -52,7 +52,10 @@ export function TaskModal({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (currentUserId && (currentUserRole === "DEV" || currentUserRole === "STAKEHOLDER")) {
+    if (
+      currentUserId &&
+      (currentUserRole === "DEV" || currentUserRole === "STAKEHOLDER")
+    ) {
       setAssigneeId(currentUserId);
     }
   }, [currentUserId, currentUserRole]);
@@ -81,7 +84,8 @@ export function TaskModal({
     onCreated();
   };
 
-  const assigneeLocked = currentUserRole === "DEV" || currentUserRole === "STAKEHOLDER";
+  const assigneeLocked =
+    currentUserRole === "DEV" || currentUserRole === "STAKEHOLDER";
   const roleHint =
     currentUserRole === "STAKEHOLDER"
       ? "Stakeholder tasks are created as requests."
@@ -110,7 +114,11 @@ export function TaskModal({
             onChange={(event) => setDescription(event.target.value)}
           />
           <div className="grid gap-3 md:grid-cols-2">
-            <Select value={assigneeId} onValueChange={setAssigneeId} disabled={assigneeLocked}>
+            <Select
+              value={assigneeId}
+              onValueChange={setAssigneeId}
+              disabled={assigneeLocked}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Assignee" />
               </SelectTrigger>

@@ -54,7 +54,9 @@ export function TaskPanel({
   useEffect(() => {
     const loadActivity = async () => {
       if (!task) return;
-      const res = await fetch(`/api/updates?projectId=${projectId}`, { cache: "no-store" });
+      const res = await fetch(`/api/updates?projectId=${projectId}`, {
+        cache: "no-store",
+      });
       const data = await res.json();
       const list = (data.updates ?? []).filter((item: any) =>
         item.content.toLowerCase().includes(task.title.toLowerCase())
@@ -97,7 +99,7 @@ export function TaskPanel({
             <div>
               <p className="text-sm text-muted-foreground">Task detail</p>
               <div className="mt-2 flex items-center gap-2">
-                <h2 className="text-lg font-semibold">{task.title}</h2>
+                <h2 className="text-lg font-semibold">{form.title}</h2>
                 <Badge className={cn("border-0", statusColors[form.status])}>
                   {form.status.replaceAll("_", " ")}
                 </Badge>
@@ -110,9 +112,7 @@ export function TaskPanel({
         </div>
         <div className="flex-1 space-y-4 overflow-y-auto p-6">
           <div className="space-y-2">
-            <p className="text-xs font-semibold text-muted-foreground">
-              Title
-            </p>
+            <p className="text-xs font-semibold text-muted-foreground">Title</p>
             <Input
               value={form.title}
               onChange={(event) =>
@@ -140,9 +140,7 @@ export function TaskPanel({
               </p>
               <Select
                 value={form.status}
-                onValueChange={(value) =>
-                  setForm({ ...form, status: value })
-                }
+                onValueChange={(value) => setForm({ ...form, status: value })}
                 disabled={!canEdit}
               >
                 <SelectTrigger>
@@ -187,7 +185,10 @@ export function TaskPanel({
               value={form.assignee?.id ?? ""}
               onValueChange={(value) => {
                 const user = users.find((item) => item.id === value);
-                setForm({ ...form, assignee: user ? { name: user.name, id: user.id } : null });
+                setForm({
+                  ...form,
+                  assignee: user ? { name: user.name, id: user.id } : null,
+                });
               }}
               disabled={!canReassign}
             >

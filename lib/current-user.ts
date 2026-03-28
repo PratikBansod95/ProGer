@@ -4,7 +4,7 @@ import { ensureSeedData } from "@/lib/seed";
 
 export async function getCurrentUser() {
   await ensureSeedData();
-  const sessionId = getSessionUserId();
+  const sessionId = await getSessionUserId();
   if (sessionId) {
     const user = await prisma.user.findUnique({ where: { id: sessionId } });
     if (user) return user;

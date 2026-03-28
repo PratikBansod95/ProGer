@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     create: { email, name, role },
   });
 
-  setSessionUserId(user.id);
+  await setSessionUserId(user.id);
 
   return NextResponse.json({ user });
 }
@@ -63,7 +63,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  setSessionUserId(user.id);
+  await setSessionUserId(user.id);
 
   return NextResponse.json({ user });
 }

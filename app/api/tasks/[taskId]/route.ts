@@ -4,13 +4,14 @@ import { getCurrentUser } from "@/lib/current-user";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
+  const { taskId } = await params;
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const task = await prisma.task.findUnique({
-    where: { id: params.taskId },
+    where: { id: taskId },
   });
   if (!task) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -57,7 +58,7 @@ export async function PATCH(
   }
 
   const updated = await prisma.task.update({
-    where: { id: params.taskId },
+    where: { id: taskId },
     data: updates,
   });
 
@@ -76,13 +77,14 @@ export async function PATCH(
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
+  const { taskId } = await params;
   const user = await getCurrentUser();
   if (!user || user.role !== "PM") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  await prisma.task.delete({ where: { id: params.taskId } });
+  await prisma.task.delete({ where: { id: taskId } });
   return NextResponse.json({ success: true });
 }

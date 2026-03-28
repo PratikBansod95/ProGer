@@ -4,8 +4,9 @@ import { getCurrentUser } from "@/lib/current-user";
 
 export async function GET(
   _request: Request,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
+  const { projectId } = await params;
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ project: null }, { status: 401 });
@@ -13,7 +14,7 @@ export async function GET(
 
   const member = await prisma.projectMember.findUnique({
     where: {
-      userId_projectId: { userId: user.id, projectId: params.projectId },
+      userId_projectId: { userId: user.id, projectId },
     },
   });
   if (!member && user.role !== "PM") {
@@ -21,7 +22,7 @@ export async function GET(
   }
 
   const project = await prisma.project.findUnique({
-    where: { id: params.projectId },
+    where: { id: projectId },
     include: {
       members: { include: { user: true } },
       tasks: {
@@ -41,8 +42,9 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
+  const { projectId } = await params;
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -55,7 +57,7 @@ export async function PATCH(
 
   const member = await prisma.projectMember.findUnique({
     where: {
-      userId_projectId: { userId: user.id, projectId: params.projectId },
+      userId_projectId: { userId: user.id, projectId },
     },
   });
   if (!member && user.role !== "PM") {
@@ -68,19 +70,19 @@ export async function PATCH(
     }
     await prisma.projectMember.upsert({
       where: {
-        userId_projectId: { userId: addMemberId, projectId: params.projectId },
+        userId_projectId: { userId: addMemberId, projectId },
       },
       update: { role: addMemberRole ?? "DEV" },
       create: {
         userId: addMemberId,
-        projectId: params.projectId,
+        projectId,
         role: addMemberRole ?? "DEV",
       },
     });
   }
 
   const project = await prisma.project.update({
-    where: { id: params.projectId },
+    where: { id: projectId },
     data: {
       ...(noteContent !== undefined
         ? {
@@ -101,13 +103,14 @@ export async function PATCH(
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
+  const { projectId } = await params;
   const user = await getCurrentUser();
   if (!user || user.role !== "PM") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  await prisma.project.delete({ where: { id: params.projectId } });
+  await prisma.project.delete({ where: { id: projectId } });
   return NextResponse.json({ success: true });
 }

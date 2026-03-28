@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Role } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
 
 export async function GET(
@@ -53,7 +54,7 @@ export async function PATCH(
   const body = await request.json();
   const noteContent = body.note;
   const addMemberId = body.addMemberId as string | undefined;
-  const addMemberRole = body.addMemberRole as string | undefined;
+  const addMemberRole = body.addMemberRole as Role | undefined;
 
   const member = await prisma.projectMember.findUnique({
     where: {
@@ -68,15 +69,16 @@ export async function PATCH(
     if (user.role !== "PM") {
       return NextResponse.json({ error: "Only PM can add members" }, { status: 403 });
     }
+    const roleValue: Role = addMemberRole ?? "DEV";
     await prisma.projectMember.upsert({
       where: {
         userId_projectId: { userId: addMemberId, projectId },
       },
-      update: { role: addMemberRole ?? "DEV" },
+      update: { role: roleValue },
       create: {
         userId: addMemberId,
         projectId,
-        role: addMemberRole ?? "DEV",
+        role: roleValue,
       },
     });
   }

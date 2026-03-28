@@ -1,0 +1,108 @@
+// Prisma schema for ProGer
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PM
+  DEV
+  STAKEHOLDER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+  REQUEST
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id        String         @id @default(cuid())
+  name      String
+  email     String         @unique
+  role      Role           @default(DEV)
+  members   ProjectMember[]
+  tasks     Task[]         @relation("TaskAssignee")
+  created   Task[]         @relation("TaskCreator")
+  updates   Update[]
+  leaves    Leave[]
+  createdAt DateTime       @default(now())
+}
+
+model Project {
+  id          String          @id @default(cuid())
+  name        String
+  description String
+  createdAt   DateTime        @default(now())
+  members     ProjectMember[]
+  tasks       Task[]
+  updates     Update[]
+  note        Note?
+}
+
+model ProjectMember {
+  id        String  @id @default(cuid())
+  userId    String
+  projectId String
+  role      Role
+  user      User    @relation(fields: [userId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id])
+
+  @@unique([userId, projectId])
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  assigneeId  String
+  creatorId   String
+  projectId   String
+  dueDate     DateTime?
+  createdAt   DateTime     @default(now())
+
+  assignee User    @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  creator  User    @relation("TaskCreator", fields: [creatorId], references: [id])
+  project  Project @relation(fields: [projectId], references: [id])
+}
+
+model Update {
+  id        String   @id @default(cuid())
+  content   String
+  projectId String
+  authorId  String
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id])
+  author  User    @relation(fields: [authorId], references: [id])
+}
+
+model Leave {
+  id        String   @id @default(cuid())
+  userId    String
+  startDate DateTime
+  endDate   DateTime
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Note {
+  id        String  @id @default(cuid())
+  content   String
+  projectId String  @unique
+  project   Project @relation(fields: [projectId], references: [id])
+}

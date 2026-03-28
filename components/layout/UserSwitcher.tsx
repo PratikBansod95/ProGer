@@ -63,7 +63,7 @@ export function UserSwitcher() {
               <div>
                 <p className="text-sm font-medium">{user.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {user.role} · {user.email}
+                  {user.role} Â· {user.email}
                 </p>
               </div>
             </DropdownMenuItem>

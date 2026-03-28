@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ProGer — Project Management",
+  title: "ProGer â€” Project Management",
   description:
     "Modern project management and stakeholder communication platform.",
 };

@@ -149,7 +149,7 @@ export default function DashboardPage() {
                     className="rounded-2xl border border-border bg-white p-4"
                   >
                     <p className="text-xs text-muted-foreground">
-                      {update.project.name} · {formatDateTime(update.createdAt)}
+                      {update.project.name} Â· {formatDateTime(update.createdAt)}
                     </p>
                     <p className="mt-2 text-sm">{update.content}</p>
                     <p className="mt-3 text-xs text-muted-foreground">

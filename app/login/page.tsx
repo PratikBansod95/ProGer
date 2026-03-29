@@ -55,7 +55,10 @@ export default function LoginPage() {
           />
           <Select value={role} onValueChange={setRole}>
             <SelectTrigger>
-              <SelectValue placeholder="Select role" />
+              <SelectValue
+                placeholder="Select role"
+                className="text-foreground"
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="PM">PM</SelectItem>

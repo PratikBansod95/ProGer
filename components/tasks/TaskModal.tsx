@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { categoryGroups } from "@/components/tasks/task-utils";
 
 interface UserItem {
   id: string;
@@ -52,6 +53,7 @@ export function TaskModal({
   const [description, setDescription] = useState("");
   const [assigneeId, setAssigneeId] = useState("");
   const [priority, setPriority] = useState("MEDIUM");
+  const [category, setCategory] = useState("PM");
   const [dueDate, setDueDate] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -64,6 +66,12 @@ export function TaskModal({
     }
   }, [currentUserId, currentUserRole]);
 
+  useEffect(() => {
+    if (open) {
+      setCategory(defaultCategory ?? "PM");
+    }
+  }, [defaultCategory, open]);
+
   const createTask = async () => {
     setLoading(true);
     await fetch("/api/tasks", {
@@ -74,7 +82,7 @@ export function TaskModal({
         description,
         assigneeId: assigneeId || currentUserId,
         priority,
-        category: defaultCategory ?? "PM",
+        category,
         status: defaultStatus,
         dueDate: dueDate ? new Date(dueDate).toISOString() : null,
         projectId,
@@ -85,6 +93,7 @@ export function TaskModal({
     setDescription("");
     setAssigneeId("");
     setPriority("MEDIUM");
+    setCategory(defaultCategory ?? "PM");
     setDueDate("");
     onOpenChange(false);
     onCreated();
@@ -147,6 +156,18 @@ export function TaskModal({
               </SelectContent>
             </Select>
           </div>
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger>
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categoryGroups.map((group) => (
+                <SelectItem key={group.value} value={group.value}>
+                  {group.label.replace(" Tasks", "")}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {roleHint && (
             <p className="text-xs text-muted-foreground">{roleHint}</p>
           )}

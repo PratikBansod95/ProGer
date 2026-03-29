@@ -111,16 +111,17 @@ export function KanbanBoard({
               <p className="text-center text-xs text-muted-foreground">
                 Drop tasks here
               </p>
-            ) : column === "TODO" ? (
+            ) : (
               <div className="space-y-3">
                 {categoryGroups.map((category) => {
                   const categoryTasks = grouped[column].filter(
                     (task) => (task.category ?? "PM") === category.value
                   );
-                  const isCollapsed = collapsedCategories[category.value];
+                  const collapseKey = `${column}-${category.value}`;
+                  const isCollapsed = collapsedCategories[collapseKey];
                   return (
                     <div
-                      key={category.value}
+                      key={`${column}-${category.value}`}
                       className="rounded-2xl border border-border bg-white/60 p-3"
                     >
                       <button
@@ -129,7 +130,7 @@ export function KanbanBoard({
                         onClick={() =>
                           setCollapsedCategories((prev) => ({
                             ...prev,
-                            [category.value]: !prev[category.value],
+                            [collapseKey]: !prev[collapseKey],
                           }))
                         }
                       >
@@ -161,8 +162,6 @@ export function KanbanBoard({
                   );
                 })}
               </div>
-            ) : (
-              grouped[column].map((task) => renderTaskCard(task))
             )}
           </div>
         </div>

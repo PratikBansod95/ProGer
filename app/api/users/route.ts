@@ -32,6 +32,13 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!process.env.DATABASE_URL) {
+    return NextResponse.json(
+      { error: "DATABASE_URL is not configured." },
+      { status: 500 }
+    );
+  }
+
   const body = await request.json();
   const email = body.email?.trim();
   const name = body.name?.trim();
@@ -40,19 +47,26 @@ export async function POST(request: Request) {
   const resolvedEmail = email ?? `user-${randomUUID()}@proger.local`;
   const resolvedName = name || resolvedEmail.split("@")[0];
 
-  const user = email
-    ? await prisma.user.upsert({
-        where: { email: resolvedEmail },
-        update: { name: resolvedName, role },
-        create: { email: resolvedEmail, name: resolvedName, role },
-      })
-    : await prisma.user.create({
-        data: { email: resolvedEmail, name: resolvedName, role },
-      });
+  try {
+    const user = email
+      ? await prisma.user.upsert({
+          where: { email: resolvedEmail },
+          update: { name: resolvedName, role },
+          create: { email: resolvedEmail, name: resolvedName, role },
+        })
+      : await prisma.user.create({
+          data: { email: resolvedEmail, name: resolvedName, role },
+        });
 
-  await setSessionUserId(user.id);
+    await setSessionUserId(user.id);
 
-  return NextResponse.json({ user });
+    return NextResponse.json({ user });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Unable to create session. Check database connectivity." },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PATCH(request: Request) {

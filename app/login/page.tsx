@@ -17,14 +17,22 @@ export default function LoginPage() {
   const [name, setName] = useState("");
   const [role, setRole] = useState("DEV");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const submit = async () => {
     setLoading(true);
-    await fetch("/api/users", {
+    setError(null);
+    const res = await fetch("/api/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, role }),
     });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "Unable to start session.");
+      setLoading(false);
+      return;
+    }
     setLoading(false);
     router.push("/dashboard");
   };
@@ -55,6 +63,11 @@ export default function LoginPage() {
               <SelectItem value="STAKEHOLDER">Stakeholder</SelectItem>
             </SelectContent>
           </Select>
+          {error && (
+            <p className="rounded-2xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+              {error}
+            </p>
+          )}
           <Button className="w-full" onClick={submit} disabled={loading}>
             {loading ? "Starting..." : "Continue"}
           </Button>

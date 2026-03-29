@@ -59,7 +59,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-pointer select-none items-center rounded-xl px-3 py-2 text-sm outline-none focus:bg-muted",
+      "relative flex w-full cursor-pointer select-none items-center rounded-xl px-3 py-2 text-sm text-foreground outline-none focus:bg-muted",
       className
     )}
     {...props}
@@ -72,23 +72,11 @@ const SelectItem = React.forwardRef<
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
 
-const SelectValue = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Value>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Value>
->(({ className, ...props }, ref) => (
-  <SelectPrimitive.Value
-    ref={ref}
-    className={cn("text-foreground", className)}
-    {...props}
-  />
-));
-SelectValue.displayName = SelectPrimitive.Value.displayName;
-
 export {
   Select,
   SelectGroup,
+  SelectValue,
   SelectTrigger,
   SelectContent,
   SelectItem,
-  SelectValue,
 };

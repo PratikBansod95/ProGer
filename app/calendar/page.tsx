@@ -70,7 +70,7 @@ export default function CalendarPage() {
                 >
                   <p className="text-sm font-semibold">{task.title}</p>
                   <p className="text-xs text-muted-foreground">
-                    {task.project.name} Â· Due {formatDate(task.dueDate)}
+                    {task.project.name} Â- Due {formatDate(task.dueDate)}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     Assignee: {task.assignee?.name ?? "Unassigned"}

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { KanbanBoard } from "@/components/tasks/KanbanBoard";
 import { TaskList, TaskItem } from "@/components/tasks/TaskList";
+import { TaskCard } from "@/components/tasks/TaskCard";
 import { TaskModal } from "@/components/tasks/TaskModal";
 import { TaskPanel } from "@/components/tasks/TaskPanel";
 import { GanttView } from "@/components/tasks/GanttView";
@@ -188,7 +189,7 @@ export default function ProjectPage() {
                     key={member.user.id}
                     className="rounded-full border border-border bg-white/5 px-3 py-1 text-xs text-muted-foreground"
                   >
-                    {member.user.name} · {member.role}
+                    {member.user.name} - {member.role}
                   </span>
                 ))}
                 {currentRole === "PM" && (
@@ -423,7 +424,7 @@ export default function ProjectPage() {
               <SelectContent>
                 {users.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
-                    {user.name} · {user.role}
+                    {user.name} - {user.role}
                   </SelectItem>
                 ))}
               </SelectContent>

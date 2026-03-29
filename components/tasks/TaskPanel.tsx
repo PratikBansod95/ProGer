@@ -269,7 +269,7 @@ export function TaskPanel({
                 {activity.map((item) => (
                   <div key={item.id} className="rounded-xl bg-white/5 p-3">
                     <p className="text-xs text-muted-foreground">
-                      {item.author.name} · {formatDateTime(item.createdAt)}
+                      {item.author.name} - {formatDateTime(item.createdAt)}
                     </p>
                     <p className="text-sm">{item.content}</p>
                   </div>

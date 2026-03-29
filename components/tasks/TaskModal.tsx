@@ -148,7 +148,7 @@ export function TaskModal({
               <SelectContent>
                 {users.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
-                    {user.name} · {user.role}
+                    {user.name} - {user.role}
                   </SelectItem>
                 ))}
               </SelectContent>

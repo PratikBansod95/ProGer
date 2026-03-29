@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { TaskCard } from "@/components/tasks/TaskCard";
 import { TaskItem } from "@/components/tasks/TaskList";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
+import { categoryGroups } from "@/components/tasks/task-utils";
 
 const columns = [
   "TODO",
@@ -27,6 +28,9 @@ export function KanbanBoard({
   canDragTask?: (task: TaskItem) => boolean;
   onAddTask?: (status: string) => void;
 }) {
+  const [collapsedCategories, setCollapsedCategories] = useState<
+    Record<string, boolean>
+  >({});
   const grouped = useMemo(() => {
     return columns.reduce((acc, column) => {
       acc[column] = tasks.filter((task) => task.status === column);
@@ -40,6 +44,26 @@ export function KanbanBoard({
       return acc;
     }, {} as Record<string, TaskItem>);
   }, [tasks]);
+
+  const renderTaskCard = (task: TaskItem) => (
+    <TaskCard
+      key={task.id}
+      id={task.id}
+      title={task.title}
+      description={task.description}
+      status={task.status}
+      priority={task.priority}
+      category={task.category}
+      assignee={task.assignee?.name}
+      dueDate={task.dueDate}
+      onClick={() => onSelect(task)}
+      draggable={!canDragTask || canDragTask(task)}
+      onDragStart={(event) => {
+        if (canDragTask && !canDragTask(task)) return;
+        event.dataTransfer.setData("text/plain", task.id);
+      }}
+    />
+  );
 
   return (
     <div className="grid gap-4 lg:grid-cols-5">
@@ -87,26 +111,58 @@ export function KanbanBoard({
               <p className="text-center text-xs text-muted-foreground">
                 Drop tasks here
               </p>
+            ) : column === "TODO" ? (
+              <div className="space-y-3">
+                {categoryGroups.map((category) => {
+                  const categoryTasks = grouped[column].filter(
+                    (task) => (task.category ?? "PM") === category.value
+                  );
+                  const isCollapsed = collapsedCategories[category.value];
+                  return (
+                    <div
+                      key={category.value}
+                      className="rounded-2xl border border-border bg-white/60 p-3"
+                    >
+                      <button
+                        type="button"
+                        className="flex w-full items-center justify-between text-left"
+                        onClick={() =>
+                          setCollapsedCategories((prev) => ({
+                            ...prev,
+                            [category.value]: !prev[category.value],
+                          }))
+                        }
+                      >
+                        <div>
+                          <p className="text-xs font-semibold text-foreground">
+                            {category.label}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {categoryTasks.length} task
+                            {categoryTasks.length === 1 ? "" : "s"}
+                          </p>
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          {isCollapsed ? "Expand" : "Collapse"}
+                        </span>
+                      </button>
+                      {!isCollapsed && (
+                        <div className="mt-3 space-y-3">
+                          {categoryTasks.length === 0 ? (
+                            <p className="text-xs text-muted-foreground">
+                              No tasks yet.
+                            </p>
+                          ) : (
+                            categoryTasks.map((task) => renderTaskCard(task))
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
-              grouped[column].map((task) => (
-                <TaskCard
-                  key={task.id}
-                  id={task.id}
-                  title={task.title}
-                  description={task.description}
-                  status={task.status}
-                  priority={task.priority}
-                  category={task.category}
-                  assignee={task.assignee?.name}
-                  dueDate={task.dueDate}
-                  onClick={() => onSelect(task)}
-                  draggable={!canDragTask || canDragTask(task)}
-                  onDragStart={(event) => {
-                    if (canDragTask && !canDragTask(task)) return;
-                    event.dataTransfer.setData("text/plain", task.id);
-                  }}
-                />
-              ))
+              grouped[column].map((task) => renderTaskCard(task))
             )}
           </div>
         </div>

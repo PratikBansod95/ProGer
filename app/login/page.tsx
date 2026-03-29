@@ -15,17 +15,15 @@ import {
 export default function LoginPage() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [role, setRole] = useState("DEV");
   const [loading, setLoading] = useState(false);
 
   const submit = async () => {
-    if (!email) return;
     setLoading(true);
     await fetch("/api/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, role }),
+      body: JSON.stringify({ name, role }),
     });
     setLoading(false);
     router.push("/dashboard");
@@ -36,22 +34,16 @@ export default function LoginPage() {
       <div className="mx-auto max-w-md rounded-2xl border border-border bg-white p-8 shadow-lg">
         <div className="mb-6">
           <p className="text-xs font-semibold text-muted-foreground">ProGer</p>
-          <h1 className="text-2xl font-semibold">Sign in with email</h1>
+          <h1 className="text-2xl font-semibold">Choose your role</h1>
           <p className="text-sm text-muted-foreground">
-            Choose a role to preview permissions instantly.
+            Start instantly with a role-based session.
           </p>
         </div>
         <div className="space-y-4">
           <Input
-            placeholder="Full name"
+            placeholder="Display name (optional)"
             value={name}
             onChange={(event) => setName(event.target.value)}
-          />
-          <Input
-            type="email"
-            placeholder="Work email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
           />
           <Select value={role} onValueChange={setRole}>
             <SelectTrigger>
@@ -63,11 +55,11 @@ export default function LoginPage() {
               <SelectItem value="STAKEHOLDER">Stakeholder</SelectItem>
             </SelectContent>
           </Select>
-          <Button className="w-full" onClick={submit} disabled={loading || !email}>
-            {loading ? "Signing in..." : "Continue"}
+          <Button className="w-full" onClick={submit} disabled={loading}>
+            {loading ? "Starting..." : "Continue"}
           </Button>
           <p className="text-xs text-muted-foreground">
-            ProGer uses a simple email-based session. No OAuth required.
+            No email required. You can switch roles anytime from the top bar.
           </p>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/current-user";
 import { setSessionUserId } from "@/lib/auth";
+import { randomUUID } from "crypto";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -33,18 +34,21 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const body = await request.json();
   const email = body.email?.trim();
-  const name = body.name?.trim() || email?.split("@")[0];
+  const name = body.name?.trim();
   const role = body.role ?? "DEV";
 
-  if (!email) {
-    return NextResponse.json({ error: "Email required" }, { status: 400 });
-  }
+  const resolvedEmail = email ?? `user-${randomUUID()}@proger.local`;
+  const resolvedName = name || resolvedEmail.split("@")[0];
 
-  const user = await prisma.user.upsert({
-    where: { email },
-    update: { name, role },
-    create: { email, name, role },
-  });
+  const user = email
+    ? await prisma.user.upsert({
+        where: { email: resolvedEmail },
+        update: { name: resolvedName, role },
+        create: { email: resolvedEmail, name: resolvedName, role },
+      })
+    : await prisma.user.create({
+        data: { email: resolvedEmail, name: resolvedName, role },
+      });
 
   await setSessionUserId(user.id);
 

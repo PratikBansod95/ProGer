@@ -187,7 +187,7 @@ export default function ProjectPage() {
                     key={member.user.id}
                     className="rounded-full border border-border bg-white/5 px-3 py-1 text-xs text-muted-foreground"
                   >
-                    {member.user.name} · {member.role}
+                    {member.user.name} Â· {member.role}
                   </span>
                 ))}
                 {currentRole === "PM" && (
@@ -358,7 +358,7 @@ export default function ProjectPage() {
               <SelectContent>
                 {users.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
-                    {user.name} · {user.role}
+                    {user.name} Â· {user.role}
                   </SelectItem>
                 ))}
               </SelectContent>

@@ -48,7 +48,7 @@ export default function CalendarPage() {
   return (
     <AppShell currentPath="/calendar" title="Calendar">
       <div className="grid gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border border-border bg-white p-6">
+        <section className="rounded-2xl border border-border bg-[linear-gradient(180deg,var(--card),var(--card-alt))] p-6">
           <h2 className="text-lg font-semibold">Upcoming tasks</h2>
           <p className="text-sm text-muted-foreground">
             Due dates across all projects.
@@ -66,7 +66,7 @@ export default function CalendarPage() {
               tasks.map((task) => (
                 <div
                   key={task.id}
-                  className="rounded-2xl border border-border bg-muted/50 p-4"
+                  className="rounded-2xl border border-border bg-white/5 p-4"
                 >
                   <p className="text-sm font-semibold">{task.title}</p>
                   <p className="text-xs text-muted-foreground">
@@ -80,7 +80,7 @@ export default function CalendarPage() {
             )}
           </div>
         </section>
-        <section className="rounded-2xl border border-border bg-white p-6">
+        <section className="rounded-2xl border border-border bg-[linear-gradient(180deg,var(--card),var(--card-alt))] p-6">
           <h2 className="text-lg font-semibold">Team leaves</h2>
           <p className="text-sm text-muted-foreground">
             Planned time off to keep scheduling realistic.
@@ -98,7 +98,7 @@ export default function CalendarPage() {
               leaves.map((leave) => (
                 <div
                   key={leave.id}
-                  className="rounded-2xl border border-border bg-muted/50 p-4"
+                  className="rounded-2xl border border-border bg-white/5 p-4"
                 >
                   <p className="text-sm font-semibold">{leave.user.name}</p>
                   <p className="text-xs text-muted-foreground">

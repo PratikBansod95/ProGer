@@ -43,7 +43,7 @@ export function KanbanBoard({
       {columns.map((column) => (
         <div
           key={column}
-          className="flex min-h-[220px] flex-col gap-3 rounded-2xl border border-border bg-white/70 p-3"
+          className="flex min-h-[220px] flex-col gap-3 rounded-2xl border border-border bg-[linear-gradient(180deg,var(--card),var(--card-alt))] p-3"
           onDragOver={(event) => event.preventDefault()}
           onDrop={(event) => {
             const taskId = event.dataTransfer.getData("text/plain");

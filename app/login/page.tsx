@@ -38,8 +38,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.12),_transparent_55%)] px-6 py-16">
-      <div className="mx-auto max-w-md rounded-2xl border border-border bg-white p-8 shadow-lg">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(124,58,237,0.25),_transparent_55%)] px-6 py-16">
+      <div className="mx-auto max-w-md rounded-2xl border border-border bg-[linear-gradient(180deg,var(--card),var(--card-alt))] p-8 shadow-[var(--shadow)]">
         <div className="mb-6">
           <p className="text-xs font-semibold text-muted-foreground">ProGer</p>
           <h1 className="text-2xl font-semibold">Choose your role</h1>

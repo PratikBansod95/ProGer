@@ -14,7 +14,7 @@ export function AppShell({
   title?: string;
 }) {
   return (
-    <div className="flex min-h-screen bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.12),_transparent_55%)]">
+    <div className="flex min-h-screen bg-[radial-gradient(circle_at_top,_rgba(124,58,237,0.2),_transparent_55%)]">
       <Sidebar currentPath={currentPath} />
       <div className="flex min-h-screen w-full flex-col">
         <Topbar title={title} />

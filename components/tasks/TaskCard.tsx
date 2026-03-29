@@ -28,7 +28,7 @@ export function TaskCard({
 }: TaskCardProps) {
   return (
     <div
-      className="rounded-2xl border border-border bg-white p-4 shadow-sm transition hover:shadow-md"
+      className="rounded-2xl border border-border bg-[linear-gradient(180deg,var(--card),var(--card-alt))] p-4 shadow-[var(--shadow)] transition hover:translate-y-[-2px]"
       onClick={onClick}
       draggable={draggable}
       onDragStart={onDragStart}

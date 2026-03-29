@@ -89,7 +89,7 @@ export function TaskPanel({
   return (
     <div
       className={cn(
-        "fixed right-0 top-0 z-40 h-full w-full max-w-lg transform bg-white shadow-2xl transition duration-300",
+        "fixed right-0 top-0 z-40 h-full w-full max-w-lg transform bg-[linear-gradient(180deg,var(--card),var(--card-alt))] shadow-2xl transition duration-300",
         task ? "translate-x-0" : "translate-x-full"
       )}
     >
@@ -220,7 +220,7 @@ export function TaskPanel({
               disabled={!canEdit}
             />
           </div>
-          <div className="space-y-3 rounded-2xl border border-border bg-muted/40 p-4">
+          <div className="space-y-3 rounded-2xl border border-border bg-white/5 p-4">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold text-muted-foreground">
                 Activity log
@@ -236,7 +236,7 @@ export function TaskPanel({
             ) : (
               <div className="space-y-2">
                 {activity.map((item) => (
-                  <div key={item.id} className="rounded-xl bg-white p-3">
+                  <div key={item.id} className="rounded-xl bg-white/5 p-3">
                     <p className="text-xs text-muted-foreground">
                       {item.author.name} · {formatDateTime(item.createdAt)}
                     </p>

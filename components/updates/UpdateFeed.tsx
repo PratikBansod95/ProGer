@@ -39,7 +39,7 @@ export function UpdateFeed({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-border bg-white p-4">
+      <div className="rounded-2xl border border-border bg-[linear-gradient(180deg,var(--card),var(--card-alt))] p-4">
         <Textarea
           placeholder="Share an update with your stakeholders..."
           value={content}
@@ -55,7 +55,7 @@ export function UpdateFeed({
         {updates.map((update) => (
           <div
             key={update.id}
-            className="rounded-2xl border border-border bg-white p-4"
+            className="rounded-2xl border border-border bg-[linear-gradient(180deg,var(--card),var(--card-alt))] p-4"
           >
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>{update.author.name}</span>

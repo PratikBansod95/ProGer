@@ -233,7 +233,7 @@ export default function ProjectPage() {
               />
             </TabsContent>
             <TabsContent value="calendar">
-              <div className="rounded-2xl border border-border bg-white p-6">
+              <div className="rounded-2xl border border-border bg-[linear-gradient(180deg,var(--card),var(--card-alt))] p-6">
                 <div className="grid gap-4 md:grid-cols-2">
                   {calendarItems.length === 0 ? (
                     <p className="text-sm text-muted-foreground">
@@ -243,7 +243,7 @@ export default function ProjectPage() {
                     calendarItems.map((item) => (
                       <div
                         key={item.id}
-                        className="rounded-2xl border border-border bg-muted/50 p-4"
+                        className="rounded-2xl border border-border bg-white/5 p-4"
                       >
                         <p className="text-sm font-semibold">{item.title}</p>
                         <p className="text-xs text-muted-foreground">
@@ -259,7 +259,7 @@ export default function ProjectPage() {
               </div>
             </TabsContent>
             <TabsContent value="notes">
-              <div className="rounded-2xl border border-border bg-white p-6">
+              <div className="rounded-2xl border border-border bg-[linear-gradient(180deg,var(--card),var(--card-alt))] p-6">
                 <Textarea
                   value={note}
                   onChange={(event) => setNote(event.target.value)}

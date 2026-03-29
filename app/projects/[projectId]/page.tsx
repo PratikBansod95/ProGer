@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { categories } from "@/components/tasks/task-utils";
+import { categories, categoryGroups } from "@/components/tasks/task-utils";
 
 interface ProjectItem {
   id: string;
@@ -76,6 +76,7 @@ export default function ProjectPage() {
   const [newMemberRole, setNewMemberRole] = useState("DEV");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [taskStatusPreset, setTaskStatusPreset] = useState<string | undefined>(undefined);
+  const [taskCategoryPreset, setTaskCategoryPreset] = useState<string | undefined>(undefined);
 
   const load = async () => {
     setLoading(true);
@@ -151,7 +152,7 @@ export default function ProjectPage() {
   const filteredTasks = useMemo(() => {
     if (!project) return [];
     if (categoryFilter === "ALL") return project.tasks;
-    return project.tasks.filter((task) => task.category === categoryFilter);
+    return project.tasks.filter((task) => (task.category ?? "PM") === categoryFilter);
   }, [project, categoryFilter]);
 
   const calendarItems = useMemo(() => {
@@ -187,7 +188,7 @@ export default function ProjectPage() {
                     key={member.user.id}
                     className="rounded-full border border-border bg-white/5 px-3 py-1 text-xs text-muted-foreground"
                   >
-                    {member.user.name} Â· {member.role}
+                    {member.user.name} · {member.role}
                   </span>
                 ))}
                 {currentRole === "PM" && (
@@ -207,9 +208,13 @@ export default function ProjectPage() {
               <Button variant="outline" onClick={() => setView("kanban")}>
                 Kanban view
               </Button>
+              <Button variant="outline" onClick={() => setView("category")}>
+                Category view
+              </Button>
               <Button
                 onClick={() => {
                   setTaskStatusPreset(undefined);
+                  setTaskCategoryPreset(undefined);
                   setTaskModalOpen(true);
                 }}
               >
@@ -254,9 +259,65 @@ export default function ProjectPage() {
                   canDragTask={canDragTask}
                   onAddTask={(status) => {
                     setTaskStatusPreset(status);
+                    setTaskCategoryPreset(
+                      categoryFilter === "ALL" ? undefined : categoryFilter
+                    );
                     setTaskModalOpen(true);
                   }}
                 />
+              ) : view === "category" ? (
+                <div className="grid gap-4 lg:grid-cols-3">
+                  {categoryGroups.map((group) => {
+                    const groupTasks = project.tasks.filter(
+                      (task) => (task.category ?? "PM") === group.value
+                    );
+                    return (
+                      <div
+                        key={group.value}
+                        className="rounded-2xl border border-border bg-[linear-gradient(180deg,var(--card),var(--card-alt))] p-4"
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-semibold text-muted-foreground">
+                            {group.label}
+                          </p>
+                          <button
+                            type="button"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border text-xs text-muted-foreground transition hover:bg-white/10"
+                            onClick={() => {
+                              setTaskStatusPreset(undefined);
+                              setTaskCategoryPreset(group.value);
+                              setTaskModalOpen(true);
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+                        <div className="mt-4 space-y-3">
+                          {groupTasks.length === 0 ? (
+                            <p className="text-xs text-muted-foreground">
+                              No tasks yet.
+                            </p>
+                          ) : (
+                            groupTasks.map((task) => (
+                              <TaskCard
+                                key={task.id}
+                                id={task.id}
+                                title={task.title}
+                                description={task.description}
+                                status={task.status}
+                                priority={task.priority}
+                                category={task.category}
+                                assignee={task.assignee?.name}
+                                dueDate={task.dueDate}
+                                onClick={() => setSelectedTask(task)}
+                              />
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               ) : (
                 <TaskList
                   tasks={filteredTasks}
@@ -321,7 +382,10 @@ export default function ProjectPage() {
         open={taskModalOpen}
         onOpenChange={(open) => {
           setTaskModalOpen(open);
-          if (!open) setTaskStatusPreset(undefined);
+          if (!open) {
+            setTaskStatusPreset(undefined);
+            setTaskCategoryPreset(undefined);
+          }
         }}
         users={users}
         projectId={projectId}
@@ -329,6 +393,7 @@ export default function ProjectPage() {
         currentUserId={currentUser?.id ?? null}
         currentUserRole={currentUser?.role ?? null}
         defaultStatus={taskStatusPreset}
+        defaultCategory={taskCategoryPreset}
       />
       <TaskPanel
         task={selectedTask}
@@ -358,7 +423,7 @@ export default function ProjectPage() {
               <SelectContent>
                 {users.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
-                    {user.name} Â· {user.role}
+                    {user.name} · {user.role}
                   </SelectItem>
                 ))}
               </SelectContent>

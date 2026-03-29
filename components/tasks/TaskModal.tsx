@@ -43,6 +43,7 @@ interface TaskModalProps {
   currentUserId: string | null;
   currentUserRole?: "PM" | "DEV" | "STAKEHOLDER" | null;
   defaultStatus?: string;
+  defaultCategory?: string;
 }
 
 export function TaskModal({
@@ -54,6 +55,7 @@ export function TaskModal({
   currentUserId,
   currentUserRole,
   defaultStatus,
+  defaultCategory,
 }: TaskModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -71,6 +73,12 @@ export function TaskModal({
       setAssigneeId(currentUserId);
     }
   }, [currentUserId, currentUserRole]);
+
+  useEffect(() => {
+    if (open) {
+      setCategory(defaultCategory ?? "PM");
+    }
+  }, [defaultCategory, open]);
 
   const createTask = async () => {
     setLoading(true);
@@ -93,7 +101,7 @@ export function TaskModal({
     setDescription("");
     setAssigneeId("");
     setPriority("MEDIUM");
-    setCategory("PM");
+    setCategory(defaultCategory ?? "PM");
     setDueDate("");
     onOpenChange(false);
     onCreated();

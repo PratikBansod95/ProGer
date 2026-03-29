@@ -30,3 +30,12 @@ export const categories = [
   { value: "QA", label: "QA" },
   { value: "SR_DEVS", label: "Sr. Devs" },
 ];
+
+export const categoryGroups = [
+  { value: "PM", label: "PM Tasks" },
+  { value: "CONTENT", label: "Content Tasks" },
+  { value: "BACKEND", label: "Backend Tasks" },
+  { value: "FRONTEND_APP", label: "Frontend/App Tasks" },
+  { value: "QA", label: "QA Tasks" },
+  { value: "SR_DEVS", label: "Sr. Devs Tasks" },
+];

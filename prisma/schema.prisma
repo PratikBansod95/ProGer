@@ -29,6 +29,15 @@ enum TaskPriority {
   HIGH
 }
 
+enum TaskCategory {
+  PM
+  CONTENT
+  BACKEND
+  FRONTEND_APP
+  QA
+  SR_DEVS
+}
+
 model User {
   id        String         @id @default(cuid())
   name      String
@@ -70,6 +79,7 @@ model Task {
   description String
   status      TaskStatus   @default(TODO)
   priority    TaskPriority @default(MEDIUM)
+  category    TaskCategory @default(PM)
   assigneeId  String
   creatorId   String
   projectId   String

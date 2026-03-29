@@ -1,6 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { cn, formatDate } from "@/lib/utils";
-import { priorityColors, statusColors } from "@/components/tasks/task-utils";
+import {
+  categoryColors,
+  priorityColors,
+  statusColors,
+} from "@/components/tasks/task-utils";
 
 interface TaskCardProps {
   id: string;
@@ -8,6 +12,7 @@ interface TaskCardProps {
   description: string;
   status: string;
   priority: string;
+  category?: string | null;
   assignee?: string;
   dueDate?: string | null;
   onClick?: () => void;
@@ -20,6 +25,7 @@ export function TaskCard({
   description,
   status,
   priority,
+  category,
   assignee,
   dueDate,
   onClick,
@@ -39,13 +45,16 @@ export function TaskCard({
           {status.replaceAll("_", " ")}
         </Badge>
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">
-        {description}
-      </p>
+      <p className="mt-2 text-xs text-muted-foreground">{description}</p>
       <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         <Badge className={cn("border-0", priorityColors[priority])}>
           {priority}
         </Badge>
+        {category && (
+          <Badge className={cn("border-0", categoryColors[category])}>
+            {category.replaceAll("_", " ")}
+          </Badge>
+        )}
         {assignee && <span>{assignee}</span>}
         {dueDate && <span>Due {formatDate(dueDate)}</span>}
       </div>

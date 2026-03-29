@@ -11,6 +11,7 @@ export interface TaskItem {
   description: string;
   status: string;
   priority: string;
+  category?: string | null;
   createdAt?: string;
   dueDate?: string | null;
   assignee?: { id: string; name: string } | null;
@@ -27,6 +28,7 @@ export function TaskList({ tasks, onSelect }: TaskListProps) {
           description={task.description}
           status={task.status}
           priority={task.priority}
+          category={task.category}
           assignee={task.assignee?.name}
           dueDate={task.dueDate}
           onClick={() => onSelect(task)}

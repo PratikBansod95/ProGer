@@ -42,6 +42,7 @@ export async function POST(request: Request) {
   const projectId = body.projectId;
   const requestedAssignee = body.assigneeId || user.id;
   const priority = body.priority ?? "MEDIUM";
+  const category = body.category ?? "PM";
   const dueDate = body.dueDate ? new Date(body.dueDate) : null;
 
   if (!title || !projectId) {
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
       assigneeId,
       status,
       priority,
+      category,
       dueDate,
     },
   });
@@ -124,6 +126,7 @@ export async function PATCH(request: Request) {
   if (body.title) updates.title = body.title;
   if (body.description !== undefined) updates.description = body.description;
   if (body.priority) updates.priority = body.priority;
+  if (body.category) updates.category = body.category;
   if (body.dueDate !== undefined) {
     updates.dueDate = body.dueDate ? new Date(body.dueDate) : null;
   }

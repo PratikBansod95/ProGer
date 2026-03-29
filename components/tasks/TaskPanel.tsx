@@ -16,6 +16,15 @@ import { TaskItem } from "@/components/tasks/TaskList";
 import { Badge } from "@/components/ui/badge";
 import { statusColors } from "@/components/tasks/task-utils";
 
+const categories = [
+  { value: "PM", label: "PM" },
+  { value: "CONTENT", label: "Content" },
+  { value: "BACKEND", label: "Backend" },
+  { value: "FRONTEND_APP", label: "Frontend/App" },
+  { value: "QA", label: "QA" },
+  { value: "SR_DEVS", label: "Sr. Devs" },
+];
+
 interface UserItem {
   id: string;
   name: string;
@@ -78,6 +87,7 @@ export function TaskPanel({
         description: form.description,
         status: form.status,
         priority: form.priority,
+        category: form.category,
         assigneeId: form.assignee?.id,
         dueDate: form.dueDate,
       }),
@@ -179,6 +189,27 @@ export function TaskPanel({
           </div>
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground">
+              Category
+            </p>
+            <Select
+              value={form.category ?? "PM"}
+              onValueChange={(value) => setForm({ ...form, category: value })}
+              disabled={!canEdit}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground">
               Assignee
             </p>
             <Select
@@ -238,7 +269,7 @@ export function TaskPanel({
                 {activity.map((item) => (
                   <div key={item.id} className="rounded-xl bg-white/5 p-3">
                     <p className="text-xs text-muted-foreground">
-                      {item.author.name} Â· {formatDateTime(item.createdAt)}
+                      {item.author.name} · {formatDateTime(item.createdAt)}
                     </p>
                     <p className="text-sm">{item.content}</p>
                   </div>

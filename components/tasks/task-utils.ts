@@ -11,3 +11,22 @@ export const priorityColors: Record<string, string> = {
   MEDIUM: "bg-amber-100 text-amber-700",
   HIGH: "bg-rose-100 text-rose-700",
 };
+
+export const categoryColors: Record<string, string> = {
+  PM: "bg-purple-100 text-purple-700",
+  CONTENT: "bg-cyan-100 text-cyan-700",
+  BACKEND: "bg-indigo-100 text-indigo-700",
+  FRONTEND_APP: "bg-pink-100 text-pink-700",
+  QA: "bg-emerald-100 text-emerald-700",
+  SR_DEVS: "bg-amber-100 text-amber-700",
+};
+
+export const categories = [
+  { value: "ALL", label: "All" },
+  { value: "PM", label: "PM" },
+  { value: "CONTENT", label: "Content" },
+  { value: "BACKEND", label: "Backend" },
+  { value: "FRONTEND_APP", label: "Frontend/App" },
+  { value: "QA", label: "QA" },
+  { value: "SR_DEVS", label: "Sr. Devs" },
+];

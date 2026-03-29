@@ -19,6 +19,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const categories = [
+  { value: "PM", label: "PM" },
+  { value: "CONTENT", label: "Content" },
+  { value: "BACKEND", label: "Backend" },
+  { value: "FRONTEND_APP", label: "Frontend/App" },
+  { value: "QA", label: "QA" },
+  { value: "SR_DEVS", label: "Sr. Devs" },
+];
+
 interface UserItem {
   id: string;
   name: string;
@@ -33,6 +42,7 @@ interface TaskModalProps {
   onCreated: () => void;
   currentUserId: string | null;
   currentUserRole?: "PM" | "DEV" | "STAKEHOLDER" | null;
+  defaultStatus?: string;
 }
 
 export function TaskModal({
@@ -43,11 +53,13 @@ export function TaskModal({
   onCreated,
   currentUserId,
   currentUserRole,
+  defaultStatus,
 }: TaskModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [assigneeId, setAssigneeId] = useState("");
   const [priority, setPriority] = useState("MEDIUM");
+  const [category, setCategory] = useState("PM");
   const [dueDate, setDueDate] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -70,6 +82,8 @@ export function TaskModal({
         description,
         assigneeId: assigneeId || currentUserId,
         priority,
+        category,
+        status: defaultStatus,
         dueDate: dueDate ? new Date(dueDate).toISOString() : null,
         projectId,
       }),
@@ -79,6 +93,7 @@ export function TaskModal({
     setDescription("");
     setAssigneeId("");
     setPriority("MEDIUM");
+    setCategory("PM");
     setDueDate("");
     onOpenChange(false);
     onCreated();
@@ -125,7 +140,7 @@ export function TaskModal({
               <SelectContent>
                 {users.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
-                    {user.name} ? {user.role}
+                    {user.name} · {user.role}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -141,6 +156,18 @@ export function TaskModal({
               </SelectContent>
             </Select>
           </div>
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger>
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((cat) => (
+                <SelectItem key={cat.value} value={cat.value}>
+                  {cat.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {roleHint && (
             <p className="text-xs text-muted-foreground">{roleHint}</p>
           )}

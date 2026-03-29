@@ -28,6 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { categories } from "@/components/tasks/task-utils";
 
 interface ProjectItem {
   id: string;
@@ -72,6 +74,8 @@ export default function ProjectPage() {
   const [memberModalOpen, setMemberModalOpen] = useState(false);
   const [newMemberId, setNewMemberId] = useState("");
   const [newMemberRole, setNewMemberRole] = useState("DEV");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [taskStatusPreset, setTaskStatusPreset] = useState<string | undefined>(undefined);
 
   const load = async () => {
     setLoading(true);
@@ -144,6 +148,12 @@ export default function ProjectPage() {
     return canEditTask(task);
   };
 
+  const filteredTasks = useMemo(() => {
+    if (!project) return [];
+    if (categoryFilter === "ALL") return project.tasks;
+    return project.tasks.filter((task) => task.category === categoryFilter);
+  }, [project, categoryFilter]);
+
   const calendarItems = useMemo(() => {
     if (!project) return [];
     return project.tasks
@@ -175,9 +185,9 @@ export default function ProjectPage() {
                 {project.members.map((member) => (
                   <span
                     key={member.user.id}
-                    className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground"
+                    className="rounded-full border border-border bg-white/5 px-3 py-1 text-xs text-muted-foreground"
                   >
-                    {member.user.name} Â· {member.role}
+                    {member.user.name} · {member.role}
                   </span>
                 ))}
                 {currentRole === "PM" && (
@@ -197,7 +207,12 @@ export default function ProjectPage() {
               <Button variant="outline" onClick={() => setView("kanban")}>
                 Kanban view
               </Button>
-              <Button onClick={() => setTaskModalOpen(true)}>
+              <Button
+                onClick={() => {
+                  setTaskStatusPreset(undefined);
+                  setTaskModalOpen(true);
+                }}
+              >
                 New task
               </Button>
             </div>
@@ -211,16 +226,40 @@ export default function ProjectPage() {
               <TabsTrigger value="gantt">Gantt</TabsTrigger>
             </TabsList>
             <TabsContent value="tasks">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.value}
+                      className={`rounded-full border border-border px-3 py-1 text-xs transition ${
+                        categoryFilter === cat.value
+                          ? "bg-white/10 text-foreground"
+                          : "text-muted-foreground hover:bg-white/5"
+                      }`}
+                      onClick={() => setCategoryFilter(cat.value)}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+                <Badge variant="outline">
+                  {filteredTasks.length} tasks
+                </Badge>
+              </div>
               {view === "kanban" ? (
                 <KanbanBoard
-                  tasks={project.tasks}
+                  tasks={filteredTasks}
                   onStatusChange={handleStatusChange}
                   onSelect={(task) => setSelectedTask(task)}
                   canDragTask={canDragTask}
+                  onAddTask={(status) => {
+                    setTaskStatusPreset(status);
+                    setTaskModalOpen(true);
+                  }}
                 />
               ) : (
                 <TaskList
-                  tasks={project.tasks}
+                  tasks={filteredTasks}
                   onSelect={(task) => setSelectedTask(task)}
                 />
               )}
@@ -280,12 +319,28 @@ export default function ProjectPage() {
       )}
       <TaskModal
         open={taskModalOpen}
-        onOpenChange={setTaskModalOpen}
+        onOpenChange={(open) => {
+          setTaskModalOpen(open);
+          if (!open) setTaskStatusPreset(undefined);
+        }}
         users={users}
         projectId={projectId}
         onCreated={load}
         currentUserId={currentUser?.id ?? null}
         currentUserRole={currentUser?.role ?? null}
+        defaultStatus={taskStatusPreset}
+      />
+      <TaskPanel
+        task={selectedTask}
+        users={users}
+        onClose={() => setSelectedTask(null)}
+        onUpdated={() => {
+          load();
+          setSelectedTask(null);
+        }}
+        canEdit={selectedTask ? canEditTask(selectedTask) : false}
+        canReassign={canReassign}
+        projectId={projectId}
       />
       <Dialog open={memberModalOpen} onOpenChange={setMemberModalOpen}>
         <DialogContent>
@@ -303,7 +358,7 @@ export default function ProjectPage() {
               <SelectContent>
                 {users.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
-                    {user.name} Â· {user.role}
+                    {user.name} · {user.role}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -329,18 +384,6 @@ export default function ProjectPage() {
           </div>
         </DialogContent>
       </Dialog>
-      <TaskPanel
-        task={selectedTask}
-        users={users}
-        onClose={() => setSelectedTask(null)}
-        onUpdated={() => {
-          load();
-          setSelectedTask(null);
-        }}
-        canEdit={selectedTask ? canEditTask(selectedTask) : false}
-        canReassign={canReassign}
-        projectId={projectId}
-      />
     </AppShell>
   );
 }
